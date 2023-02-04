@@ -10,6 +10,13 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.4/dist/sweetalert2.all.min.js"></script>
 </head>
 <style>
+  .container {
+  width: 800px;
+  height: 100vh;
+  margin: 0;
+}
+
+
   body {
     display: flex;
     align-items: center;
@@ -50,11 +57,17 @@
   #convertBtn:hover {
     background-color: #3e8e41;
   }
+
+  @media only screen and (max-width: 600px) {
+  .container {
+    width: 90%;
+  }
+}
 </style>
 
 <body>
   <div class="container">
-
+    <img src="https://scontent.fsgn5-10.fna.fbcdn.net/v/t39.30808-6/309706511_109670281919963_7138857053275855256_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=uiqMm7ilmHgAX-jcuRg&tn=SY7ktdkvLAbzGZqs&_nc_ht=scontent.fsgn5-10.fna&oh=00_AfCI9IQUEt5gXrFjdQfH5K9O00L0EPpegoev19A_JIvshA&oe=63E355C9" alt="" width="300px">
 
     <label for="fileInput" class="btn btn-primary btn-block btn-outlined">Chọn ảnh cần đổi định dạng</label>
     <input type="file" id="fileInput" style="display: none">
@@ -67,11 +80,10 @@
       <option value="jpeg">JPEG</option>
       <option value="png">PNG</option>
       <option value="webp">WEBP</option>
-      <option value="gif">GIF</option>
       <option value="bmp">BMP</option>
       <option value="tiff">TIFF</option>
     </select>
-    <button id="convertBtn">Convert</button>
+    <button id="convertBtn">Chuyển đổi</button>
   </div>
   <script>
     const fileInput = document.getElementById('fileInput');
@@ -97,9 +109,22 @@
         // Use local file
         image = URL.createObjectURL(fileInput.files[0]);
       } else {
-        alert('Please select a file');
+        Swal.fire({
+          type: 'error',
+          title: 'Chưa chọn hình ảnh',
+          text: 'Vui lòng chọn hình ảnh cần convert'
+        });
         return;
       }
+      if (formatSelect.value === '0') {
+        Swal.fire({
+          type: 'error',
+          title: 'Chưa chọn định dạng',
+          text: 'Vui lòng chọn định dạng cần convert'
+        });
+        return;
+      }
+      
 
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
@@ -121,8 +146,8 @@
       link.href = dataURL;
       link.click();
       Swal.fire({
-        title: 'Converted!',
-        text: 'Image has been converted successfully!',
+        title: 'Thành công!',
+        text: 'Hình ảnh đã được chuyển định dạng và tải xuống!',
         icon: 'success',
         confirmButtonText: 'OK'
       })
