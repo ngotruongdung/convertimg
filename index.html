@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/ratchet/2.0.2/css/ratchet.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.4/dist/sweetalert2.all.min.js"></script>
+</head>
+<style>
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to right, #4f00bc, #29abe2);
+  }
+
+  .container {
+    width: 800px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+  }
+
+  #fileInput,
+  #imgURL,
+  #formatSelect,
+  #convertBtn {
+    margin: 10px;
+    padding: 10px;
+    font-size: 18px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+
+  #convertBtn {
+    width: 200px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  #convertBtn:hover {
+    background-color: #3e8e41;
+  }
+</style>
+
+<body>
+  <div class="container">
+
+
+    <label for="fileInput" class="btn btn-primary btn-block btn-outlined">Chọn ảnh cần đổi định dạng</label>
+    <input type="file" id="fileInput" style="display: none">
+    <img id="imgDisplay" style="display: none; max-width: 100%;" />
+
+
+
+    <select id="formatSelect">
+      <option value="0">Chọn định dạng</option>
+      <option value="jpeg">JPEG</option>
+      <option value="png">PNG</option>
+      <option value="webp">WEBP</option>
+      <option value="gif">GIF</option>
+      <option value="bmp">BMP</option>
+      <option value="tiff">TIFF</option>
+    </select>
+    <button id="convertBtn">Convert</button>
+  </div>
+  <script>
+    const fileInput = document.getElementById('fileInput');
+    const imgDisplay = document.getElementById('imgDisplay');
+    const formatSelect = document.getElementById('formatSelect');
+    const convertBtn = document.getElementById('convertBtn');
+
+
+
+    fileInput.addEventListener('change', (event) => {
+      if (event.target.files.length > 0) {
+        const image = URL.createObjectURL(event.target.files[0]);
+        imgDisplay.src = image;
+        imgDisplay.style.display = 'block';
+      } else {
+        imgDisplay.style.display = 'none';
+      }
+    });
+
+    convertBtn.addEventListener('click', async () => {
+      let image;
+      if (fileInput.files.length > 0) {
+        // Use local file
+        image = URL.createObjectURL(fileInput.files[0]);
+      } else {
+        alert('Please select a file');
+        return;
+      }
+
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const imageObj = new Image();
+      imageObj.src = image;
+      await new Promise(resolve => {
+        imageObj.onload = () => {
+          canvas.width = imageObj.width;
+          canvas.height = imageObj.height;
+          ctx.drawImage(imageObj, 0, 0);
+          resolve();
+        };
+      });
+
+      const format = formatSelect.value;
+      const dataURL = canvas.toDataURL(`image/${format}`);
+      const link = document.createElement('a');
+      link.download = `converted.${format}`;
+      link.href = dataURL;
+      link.click();
+      Swal.fire({
+        title: 'Converted!',
+        text: 'Image has been converted successfully!',
+        icon: 'success',
+        confirmButtonText: 'OK'
+      })
+    });
+
+  </script>
+</body>
+
+</html>
