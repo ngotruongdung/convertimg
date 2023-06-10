@@ -7,8 +7,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tool này Dũng đẹp trai làm</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/ratchet/2.0.2/css/ratchet.css" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
   <style>
@@ -20,9 +20,9 @@
       background: linear-gradient(to right, #4f00bc, #29abe2);
       font-family: 'Montserrat', sans-serif;
     }
-    h1{
-        text-align: center;
-        padding: 20px 0;
+    h1 {
+      text-align: center;
+      padding: 20px 0;
     }
 
     .container {
@@ -165,13 +165,29 @@
       const link = document.createElement('a');
       link.download = `converted.${format}`;
       link.href = dataURL;
-      link.click();
-      Swal.fire({
-        title: 'Thành công!',
-        text: 'Hình ảnh đã được chuyển định dạng và tải xuống!',
-        icon: 'success',
-        confirmButtonText: 'OK'
+
+      // Tạo một hộp thoại để chọn nơi lưu tệp
+      const fileDialog = document.createElement('input');
+      fileDialog.type = 'file';
+      fileDialog.style.display = 'none';
+      fileDialog.addEventListener('change', () => {
+        if (fileDialog.files.length > 0) {
+          const selectedFile = fileDialog.files[0];
+          const reader = new FileReader();
+          reader.onload = () => {
+            const fileData = new Uint8Array(reader.result);
+            const blob = new Blob([fileData], { type: `image/${format}` });
+
+            const saveLink = document.createElement('a');
+            saveLink.href = URL.createObjectURL(blob);
+            saveLink.download = `converted.${format}`;
+            saveLink.click();
+            URL.revokeObjectURL(saveLink.href);
+          };
+          reader.readAsArrayBuffer(selectedFile);
+        }
       });
+      fileDialog.click();
     });
   </script>
 </body>
