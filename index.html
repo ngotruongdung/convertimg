@@ -5,81 +5,98 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Công cụ chuyển đổi hình ảnh Fii Media</title>
+  <title>Tool này Dũng đẹp trai làm</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/ratchet/2.0.2/css/ratchet.css" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.4/dist/sweetalert2.all.min.js"></script>
-</head>
-<style>
-  body {
-    display: flex;
-    height: auto;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(to right, #4f00bc, #29abe2);
-  }
-
-  .container {
-    width: 800px;
-    height: auto;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-
-  #fileInput,
-  #imgURL,
-  #formatSelect,
-  #convertBtn {
-    margin: 10px;
-    padding: 10px;
-    font-size: 18px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-  }
-
-  #convertBtn {
-    width: 200px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-
-  #convertBtn:hover {
-    background-color: #3e8e41;
-  }
-
-  @media only screen and (max-width: 600px) {
-
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <style>
     body {
       display: flex;
-      align-items: flex-start;
+      height: 100vh;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(to right, #4f00bc, #29abe2);
+      font-family: 'Montserrat', sans-serif;
+    }
+    h1{
+        text-align: center;
+        padding: 20px 0;
     }
 
     .container {
-      width: 80%;
+      width: 400px;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     }
 
+    .container img {
+      display: block;
+      margin: 0 auto;
+      max-width: 100%;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    }
 
-  }
-</style>
+    .file-label {
+      display: block;
+      margin-bottom: 10px;
+      text-align: center;
+      color: #fff;
+      background-color: #4CAF50;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .file-label:hover {
+      background-color: #45a049;
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    .format-select {
+      margin-bottom: 10px;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      width: 100%;
+    }
+
+    .convert-btn {
+      display: block;
+      margin: 0 auto;
+      padding: 10px 20px;
+      font-size: 16px;
+      color: #fff;
+      background-color: #4CAF50;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .convert-btn:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
 
 <body>
   <div class="container">
-    <img
-      src="https://scontent.fsgn5-10.fna.fbcdn.net/v/t39.30808-6/309706511_109670281919963_7138857053275855256_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=uiqMm7ilmHgAX-jcuRg&tn=SY7ktdkvLAbzGZqs&_nc_ht=scontent.fsgn5-10.fna&oh=00_AfCI9IQUEt5gXrFjdQfH5K9O00L0EPpegoev19A_JIvshA&oe=63E355C9"
-      alt="" width="150px">
+    <h1>Dũng Đẹp Trai</h1>
+    <label for="fileInput" class="file-label">Chọn ảnh cần đổi định dạng</label>
+    <input type="file" id="fileInput" class="file-input">
 
-    <label for="fileInput" class="btn btn-primary btn-block btn-outlined">Chọn ảnh cần đổi định dạng</label>
-    <input type="file" id="fileInput" style="display: none">
-    <img id="imgDisplay" style="display: none; max-width: 60%;" />
+    <img id="imgDisplay" style="display: none; max-width: 100%;" />
 
-
-
-    <select id="formatSelect">
+    <select id="formatSelect" class="format-select">
       <option value="0">Chọn định dạng</option>
       <option value="jpeg">JPEG</option>
       <option value="png">PNG</option>
@@ -87,15 +104,16 @@
       <option value="bmp">BMP</option>
       <option value="tiff">TIFF</option>
     </select>
-    <button id="convertBtn">Chuyển đổi</button>
+
+    <button id="convertBtn" class="convert-btn">Chuyển đổi</button>
   </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.4/dist/sweetalert2.all.min.js"></script>
   <script>
     const fileInput = document.getElementById('fileInput');
     const imgDisplay = document.getElementById('imgDisplay');
     const formatSelect = document.getElementById('formatSelect');
     const convertBtn = document.getElementById('convertBtn');
-
-
 
     fileInput.addEventListener('change', (event) => {
       if (event.target.files.length > 0) {
@@ -129,7 +147,6 @@
         return;
       }
 
-
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       const imageObj = new Image();
@@ -154,9 +171,8 @@
         text: 'Hình ảnh đã được chuyển định dạng và tải xuống!',
         icon: 'success',
         confirmButtonText: 'OK'
-      })
+      });
     });
-
   </script>
 </body>
 
