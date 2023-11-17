@@ -25,6 +25,11 @@
         padding: 20px 0;
     }
 
+    canvas {
+      border: 1px solid #ddd;
+      margin-top: 10px;
+    }
+
     .container {
       width: 400px;
       padding: 20px;
@@ -107,7 +112,67 @@
 
     <button id="convertBtn" class="convert-btn">Chuyển đổi</button>
   </div>
+<input type="file" id="pdfInput" accept=".pdf">
+  <button onclick="convertToImage()">Chuyển đổi thành Ảnh</button>
+  <canvas id="pdfCanvas"></canvas>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.8.335/pdf.min.js"></script>
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+  <script>
+    let pdfDoc = null;
+    let pageNum = 1;
+    let pageRendering = false;
+    let pdfCanvas = document.getElementById('pdfCanvas');
+    let pdfContext = pdfCanvas.getContext('2d');
+
+    function renderPage(num) {
+      pageRendering = true;
+
+      pdfDoc.getPage(num).then(function(page) {
+        let viewport = page.getViewport({ scale: 1.5 });
+        pdfCanvas.height = viewport.height;
+        pdfCanvas.width = viewport.width;
+
+        let renderContext = {
+          canvasContext: pdfContext,
+          viewport: viewport
+        };
+
+        page.render(renderContext).promise.then(function() {
+          pageRendering = false;
+        });
+      });
+    }
+
+    function convertToImage() {
+      let pdfInput = document.getElementById('pdfInput');
+      let file = pdfInput.files[0];
+
+      if (file) {
+        let reader = new FileReader();
+
+        reader.onload = function(e) {
+          let data = new Uint8Array(e.target.result);
+
+          pdfjsLib.getDocument(data).promise.then(function(pdfDoc_) {
+            pdfDoc = pdfDoc_;
+            renderPage(pageNum);
+          });
+        };
+
+        reader.readAsArrayBuffer(file);
+      }
+    }
+
+    document.getElementById('pdfInput').addEventListener('change', convertToImage);
+
+    pdfCanvas.addEventListener('click', function() {
+      if (!pageRendering && pageNum < pdfDoc.numPages) {
+        pageNum++;
+        renderPage(pageNum);
+      }
+    });
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.4/dist/sweetalert2.all.min.js"></script>
   <script>
     const fileInput = document.getElementById('fileInput');
